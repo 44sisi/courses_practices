@@ -55,6 +55,20 @@ def selection_sort(arr):
 # print(selection_sort([5, 6, 4, 1, 2, 3]))
 
 
+# insertion sort (O_n^2, Omega_n)
+def insertion_sort(arr):
+    for i in range(len(arr)):
+        if arr[i] < arr[0]:
+            arr.insert(0, arr.pop(i))
+        else:
+            for j in range(i-1, -1, -1):
+                if arr[i] >= arr[j]:
+                    arr.insert(j+1, arr.pop(i))
+                    break
+    return arr
+# print(insertion_sort([9, 8, 4, 10, 7, 6, 5]))
+
+
 # draw pyramid - iteration
 def draw_pyramid_iteration(h):
     for h in range(1, h+1):
