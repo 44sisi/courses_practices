@@ -1,4 +1,4 @@
-.open shows.db
+.open shows_sql.db
 
 INSERT INTO shows (Timestamp, title, genres) 
 VALUES ("now", "The Muppet Show", "Comedy, Musical");
