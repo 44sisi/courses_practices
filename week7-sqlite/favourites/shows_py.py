@@ -1,7 +1,7 @@
 import sqlite3
 import csv
 
-# create empty db
+# create empty db if not exists
 open("shows_py.db", "w").close()
 
 # create connection to sqlite3 db

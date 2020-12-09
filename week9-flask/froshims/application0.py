@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request, redirect
-import sqlite3
 
 app = Flask(__name__)
 
-# conn = sqlite3.connect("froshims.db")
-# with conn:
-#     c = conn.cursor()
+REGISTRANTS = {}
 
 SPORTS = [
     "Dodgeball",
@@ -35,19 +32,12 @@ def register():
         return render_template("error.html", message="Missing Sport")
     if sport not in SPORTS:
         return render_template("error.html", message="Invalid Sport")
+    REGISTRANTS[registered_name] = sport
+    print(REGISTRANTS)
 
-    with sqlite3.connect("froshims.db") as conn:
-        c = conn.cursor()
-        c.execute("INSERT INTO registrants (name, sport) VALUES(?, ?)",
-                  (registered_name, sport))
     return redirect("/registrants")
 
 
 @app.route("/registrants")
 def registrants():
-    with sqlite3.connect("froshims.db") as conn:
-        conn.row_factory = sqlite3.Row
-        c = conn.cursor()
-        registrant_db_rows = c.execute("SELECT * FROM registrants")
-        print(c.fetchall())
-    return render_template("registrants.html", registrants=registrant_db_rows)
+    return render_template("registrants.html", registrants=REGISTRANTS)
