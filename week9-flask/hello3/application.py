@@ -12,5 +12,5 @@ def index():
 
 
 # to run:
-# export FLASK_APP=application.py OR set FLASK_APP=application.py
+# export FLASK_APP=application.py
 # flask run
