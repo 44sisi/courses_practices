@@ -1,11 +1,17 @@
-from flask import Flask, render_template, request, redirect
 import sqlite3
+from flask import Flask, render_template, request, redirect
+# from flask_mail import Mail, Message
+# import os
+
 
 app = Flask(__name__)
-
-# conn = sqlite3.connect("froshims.db")
-# with conn:
-#     c = conn.cursor()
+# app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
+# app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+# app.config["MAIL_PORT"] = 587
+# app.config["MAIL_SERVER"] = "smtp.gmail.com"
+# app.config["MAIL_USE_TLS"] = True
+# app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+# mail = Mail(app)
 
 SPORTS = [
     "Dodgeball",
@@ -23,10 +29,6 @@ def index():
 
 @app.route("/register", methods=["POST"])
 def register():
-    # if not request.form.get("inputname") or request.form.getlist("sport") not in SPORTS:
-    # if not request.form.get("inputname") or request.form.get("sport") not in SPORTS:
-    #     return render_template("failure.html")
-    # return render_template("success.html")
     registered_name = request.form.get("inputname")
     sport = request.form.get("sport")
     if not registered_name:
@@ -40,6 +42,7 @@ def register():
         c = conn.cursor()
         c.execute("INSERT INTO registrants (name, sport) VALUES(?, ?)",
                   (registered_name, sport))
+
     return redirect("/registrants")
 
 
@@ -48,6 +51,6 @@ def registrants():
     with sqlite3.connect("froshims.db") as conn:
         conn.row_factory = sqlite3.Row
         c = conn.cursor()
-        registrant_db_rows = c.execute("SELECT * FROM registrants")
-        print(c.fetchall())
+        c.execute("SELECT * FROM registrants")
+        registrant_db_rows = c.fetchall()
     return render_template("registrants.html", registrants=registrant_db_rows)
