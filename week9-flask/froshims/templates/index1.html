@@ -5,7 +5,9 @@
     <h1>Register</h1>
     <form action="/register" method="post">
         <input name="inputname" type="text" autofocus placeholder="input your name">
-        <input name="inputemail" type="email" autofocus placeholder="input your email">
+        <!-- {% for sport in sports %}
+                <input type="checkbox" value="{{ sport }}"> {{ sport }}
+        {% endfor %} -->
         <select name="sport">
             <option disabled selected value="">Sport</option>
             {% for sport in sports %}

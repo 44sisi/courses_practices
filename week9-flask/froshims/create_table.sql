@@ -6,3 +6,6 @@ CREATE TABLE registrants (
     sport TEXT NOT NULL, 
     PRIMARY KEY(id)
 );
+
+ALTER TABLE registrants
+ADD email varchar(255);
