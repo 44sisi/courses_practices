@@ -1,1 +1,3 @@
 __pycache__
+start.sh
+flask_session
