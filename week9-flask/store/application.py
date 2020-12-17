@@ -39,7 +39,11 @@ def cart():
     with sqlite3.connect("store.db") as conn:
         conn.row_factory = sqlite3.Row
         db = conn.cursor()
-        db.execute("SELECT * FROM books WHERE id IN (?)",
-                   session["cart"])
+
+        args = session["cart"]
+        sql = "SELECT * FROM books WHERE id IN ({seq})".format(
+            seq=','.join(['?']*len(args)))
+        db.execute(sql, args)
         books = db.fetchall()
+        print(books[0])
     return render_template("cart.html", books=books)
