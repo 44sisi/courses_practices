@@ -16,6 +16,12 @@
     - `-p`: to publish which port we are using for container and host, hostpot:containerpot. e.g. port 8080 on the container can be accessed internally through port 8080 on the Amazon EC2 instance
 
     - `name`: give a name to the container, optional
+    
+    `docker run -i -t ubuntu /bin/bash`
+
+    - Docker starts the container and executes /bin/bash. 
+    
+    - Because the container is running interactively and attached to your terminal (due to the -i and -t flags), you can provide input using your keyboard while the output is logged to your terminal.
 
 - confirm container is running
 
