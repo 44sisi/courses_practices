@@ -38,7 +38,7 @@
     }
 
     # Instantiate the DAG object
-        # name of dag: etl_workflow
+        # dag_id: etl_workflow
         # variable name etl_dag doesn't appear in airflow interface
-    etl_dag = DAG('etl_workflow', defaultargs = default_arguments)
+    etl_dag = DAG(dag_id = 'etl_workflow', default_args = default_arguments)
     ```
