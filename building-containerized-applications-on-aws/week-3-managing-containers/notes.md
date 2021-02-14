@@ -33,6 +33,5 @@
 
 ## Container Agent
 - The container agent runs on each compute node within an ECS cluster.
-- It sends information about the resource's current running task and resource utilization to ECS
-- It also as well as starting and stopping tasks
+- It sends information about the resource's current running task and resource utilization to ECS, as well as starting and stopping tasks
 whenever it receives a request from ECS.
