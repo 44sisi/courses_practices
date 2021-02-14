@@ -51,3 +51,93 @@ or other resources with the same name in different namespaces and not run into a
 - A pod spec includes the pod's name, containers, and volumes that will be created for the pod.
 - A ReplicaSet ensures a specific number of pod replicas are running at any given time. ReplicaSets describe desired state via YAML to create the deployment, and the deployment changes the actual state to the desired state at a controlled rate.
 - You can set up scheduling constraints at the node level as well as at the pod level.
+
+## Demo
+
+### Setup
+- Installation, update and setup of the AWS Command Line tools.
+- Install the Command Line tools for EKS (EKS control) and Kubernetes (Kube control). 
+- EKS control will be utilized for our cluster management, and Kube control will be our management tool for the containers.
+
+### Use EKS control to create cluster
+```
+eksctl create cluster \
+--name eksdemo \
+--version 1.14 \
+--nodegroup-name standard-workers \
+--node-type t3.medium \
+--nodes 3 \
+--nodes-min 1 \
+--nodes-max 4 \
+--node-ami auto
+```
+- `--name` is the identifier in the cluster in EKS
+- `--version` is the version of Kubernetes
+- All of the other parameters are related to the nodes that are going to be launched as part of the cluster.
+    - `--nodegroup-name` is the identifying name for the cluster of instances
+    - `--node-type`is the instance type that is being launched for this particular implementation
+    - `--nodes`, `--nodes-min`, `--nodes-max` are all focused on the number of instances you are going to run. 
+        - In this case, it's going to start with three instances,
+        - but should scaling be established and configured, it could have as many as four instances, or as few as one.
+    - `--node-ami` is referring to the image that is going to be used to prepare the instance to manage the containers.
+
+
+### To see the cluster created 
+- 
+    ```
+    aws eks list-clusters --region-west-2 --output=json
+    ```
+
+- Output: 
+    ```
+    {
+        "clusters": [
+            "eksdemo"
+        ]
+    }
+    ```
+
+### Spin up some of our own pods in a deployment
+- Pulls the latest Nginx image from Docker Hub and creates a deployment with one pod.
+
+    ```
+    kubectl create deployment nginx --image=gninx: latest
+    ```
+
+- It works well for the purposes of this demo for a quick testing, but in the real world, this is done differently.
+- One, you wouldn't use the latest, and two, you would also put all of the details for this deployment into a declarative YAML file.
+- We also don't ever want to just run one of anything,
+so let's scale up this deployment.
+    ```
+    kubectl scale deployment/nginx --replicas=4
+    ```
+
+### Make sure the deployment's scaled out to four pods
+- First, we'll describe the deployment to get more details.
+    ```
+    kubectl describe deployment/nginx
+    ```
+
+- Now, let's see those four pods actually running.
+    ```
+    kubectl get pods
+    ```
+    - You can see the original pod,
+and three created simultaneously by the scale command.
+
+### Expose this deployment as a service fronted by a load balancer.
+- 
+    ```
+    kubectl expose deploy/nginx --port=80 --target-port=80 --type=LoadBalancer --name=web
+    ```
+    - Here, Kubernetes exposes the service and creates ELB on its own.
+
+- There's no secret here for EKS, as this is upstream Kubernetes existing integration with AWS. And because this is upstream Kubernetes, we can use the standard cube control tricks, like JSONPath output filtering.
+    ```
+    kubectl get svc/web -o=jsonpath="{.status.loadBalancer.ingress..hostname}"
+    ```
+
+- After giving it a few minutes to make sure the load balancer's up and running, and that the targets are registered properly and serving traffic, we can use this output of this previous command to allow us to view the web page we've just set up. 
+- And with that, we have public facing containers up and running with EKS.
+
+
