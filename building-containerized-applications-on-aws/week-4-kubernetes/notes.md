@@ -43,3 +43,11 @@ or other resources with the same name in different namespaces and not run into a
 ## Kubernetes API
 - You create these objects and you call the Kubernetes APIs which will kick off a series of processes to ensure that your cluster matches your various object definitions.
 - State changes for your cluster may include things like, running a new pod, scaling your system, changing what images are being used for your container instances, changing network or disk resources and a lot more, too.
+
+<p>&nbsp;</p>
+
+# EKS
+- With EKS pods are defined with a pod spec within a YAML based manifest file.
+- A pod spec includes the pod's name, containers, and volumes that will be created for the pod.
+- A ReplicaSet ensures a specific number of pod replicas are running at any given time. ReplicaSets describe desired state via YAML to create the deployment, and the deployment changes the actual state to the desired state at a controlled rate.
+- You can set up scheduling constraints at the node level as well as at the pod level.
