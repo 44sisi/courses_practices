@@ -112,3 +112,51 @@ init_sales_cleanup >> file_sensor_task >> generate_report
     - run python3 interpreter against the dag file
     - If there are errors, you'll get an appropriate error message. 
     - If there are no errors, you'll be returned to the command prompt, as there's nothing for the interpreter to do
+
+<p>&nbsp;</p>
+
+# SLAs and reporting in airflow
+- within airflow, it's the amount of time a task or a DAG should require to run
+- if an SLA is missed, an email is sent out per system configuration and a log is stored 
+- can view SLA misses in web UI under Browse, SLA Misses
+
+## Defining SLA
+- `sla` argument on the task
+```python
+task1 = BashOperator(
+    task_id = "sla_task",
+    sla = timedelta(seconds = 30),
+    dag = dag
+)
+```
+- `default_args` dictionary
+```python
+# applies to any taks internally in the dag
+default_args = {
+    "sla": timedelta(seconds = 30)
+    "start_date": datetime(2020, 2, 20)
+}
+dag = DAG("sla_dag", default_args = default_args)
+```
+
+## timedelta object
+```python
+from datetime import timedelta
+
+timedelta1 = timedelta(weeks = 2)
+
+timedelta2 = timedelta(days = 4, hours = 20, minutes = 20, seconds = 30)
+```
+
+## General reporting
+- built-in options for sending messages on success, failure, or error / retry
+- handled via keys in the default_args dictionary, e.g.
+    ```python
+    default_args = {
+        "email": ["airflowalters@datacamp.com"],
+        "email_on_failure": True,
+        "email_on_retry": False,
+        "email_on_success": True
+    }
+    ```
+- within DAGs from the EmailOperator 
