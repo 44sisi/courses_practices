@@ -38,6 +38,8 @@ init_sales_cleanup >> file_sensor_task >> generate_report
 - if failure not immediately desired
 - to add task repetition without loops
 
+<p>&nbsp;</p>
+
 # Executors
 
 ## SequentialExecutor
@@ -80,3 +82,33 @@ init_sales_cleanup >> file_sensor_task >> generate_report
     ```
     INFO - Using executor SequentialExecutor
     ```
+
+<p>&nbsp;</p>
+
+# Debugging and troubleshooting 
+
+## DAG won't run on schedule
+- check if scheduler is running
+    - can see a warning on airflow web server
+    - fix by running `airflow scheduler` from command-line
+- at least one `schedule_interval` hasn't passed
+    - modify the attributes to meet your requirements
+- the executor doesn't have free slots to run tasks
+    - change executor type
+    - add system resources like ram, cpu
+    - add systems
+    - chaneg DAG scheduling
+
+## DAG won't load
+- DAG not in web UI or not in `airflow list_dags`
+    - check the python DAG file is in the correct directory
+    - determine the DAGS folder setting via `airflow.cfg` file, line `dags_folder`, where the path must be an absolute path
+
+## Syntax errors
+- `airflow list_dags`
+    - output some debugging information and the list of DAGs it's processeds
+    - any errors will appear in the output 
+- `python3 dag.py`
+    - run python3 interpreter against the dag file
+    - If there are errors, you'll get an appropriate error message. 
+    - If there are no errors, you'll be returned to the command prompt, as there's nothing for the interpreter to do
