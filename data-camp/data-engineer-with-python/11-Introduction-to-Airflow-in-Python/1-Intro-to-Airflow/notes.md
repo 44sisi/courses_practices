@@ -1,6 +1,9 @@
 - Running a simple airflow task
 
-    `airflow run <dag_id> <task_id> <start_date>`
+    `airflow run <dag_id> <task_id> <execution_date>`
+
+- Run a full dag
+    `airflow trigger_dag -e <execution_date> <dag_id>`
 
 - Get sub-commands for airflow
 
