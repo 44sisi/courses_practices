@@ -46,9 +46,9 @@ public class PinGuesser {
 
     public Set<String> combineSolutions(Set<String> pins1, Set<String> pins2) {
         return pins1.stream().flatMap(
-                    (pin1) -> pins2.stream().map(
-                        (pin2) -> pin1 + pin2
-                    )
-                ).collect(Collectors.toSet());
+            (pin1) -> pins2.stream().map(
+                (pin2) -> pin1 + pin2
+            )
+        ).collect(Collectors.toSet());
     }
 }

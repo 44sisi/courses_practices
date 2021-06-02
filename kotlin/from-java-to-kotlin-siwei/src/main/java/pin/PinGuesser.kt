@@ -9,11 +9,6 @@ import java.util.stream.Collectors
 class PinGuesser {
     companion object {
         var mapPins: MutableMap<String, Set<String>> = HashMap()
-        @JvmStatic
-        fun main(args: Array<String>) {
-            val s = PinGuesser().getPINs("3421")
-            println(s)
-        }
 
         init {
             mapPins["1"] = java.util.Set.of("1", "2", "4")
@@ -27,6 +22,12 @@ class PinGuesser {
             mapPins["9"] = java.util.Set.of("6", "8", "9")
             mapPins["0"] = java.util.Set.of("0", "8")
         }
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            val s = PinGuesser().getPINs("3421")
+            println(s)
+        }
     }
 
     fun getPINs(observedPin: String): Set<String> {
@@ -34,7 +35,7 @@ class PinGuesser {
             if (!mapPins.containsKey(c.toString() + "")) throw RuntimeException("PIN $observedPin contains invalid character $c")
         }
         if (observedPin.isEmpty()) {
-            return java.util.Set.of()
+            return emptySet()
         }
         val pins1 = mapPins[observedPin[0].toString() + ""]!!
         return if (observedPin.length == 1) {
@@ -45,7 +46,10 @@ class PinGuesser {
     }
 
     fun combineSolutions(pins1: Set<String>, pins2: Set<String>): Set<String> {
-        return pins1.stream().flatMap { pin1: String -> pins2.stream().map { pin2: String -> pin1 + pin2 } }
-            .collect(Collectors.toSet())
+        return pins1.stream().flatMap {
+            pin1: String -> pins2.stream().map {
+                pin2: String -> pin1 + pin2
+            }
+        }.collect(Collectors.toSet())
     }
 }
