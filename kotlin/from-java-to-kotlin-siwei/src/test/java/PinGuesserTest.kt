@@ -51,7 +51,7 @@ internal class PinGuesserTest {
                 Arguments.of("0", setOf("0", "8")),
                 Arguments.of("00", setOf("00", "08", "80", "88")),
                 Arguments.of("09", setOf("06", "08", "09", "86", "88", "89")),
-                Arguments.of("", setOf<Any>()),
+                Arguments.of("", setOf("")),
                 Arguments.of("090", mySetOf("088, 880, 068, 860, 090, 898, 080, 888, 060, 868, 098, 890")),
                 Arguments.of(
                     "0900",
