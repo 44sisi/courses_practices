@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Assertions
-import pin.PinGuesser
+import pin.getPINs
+import pin.combineSolutions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -7,11 +8,11 @@ import java.lang.RuntimeException
 import java.util.stream.Stream
 
 internal class PinGuesserTest {
-    val pinGuesser = PinGuesser()
+
     @ParameterizedTest
     @MethodSource("testSingleDigitParameters")
     fun testSingleDigit(observedPin: String?, expected: Set<String?>?) {
-        val actual = pinGuesser.getPINs(observedPin!!)
+        val actual = getPINs(observedPin!!)
         Assertions.assertEquals(expected, actual)
     }
 
@@ -19,14 +20,14 @@ internal class PinGuesserTest {
     @MethodSource("invalidParams")
     fun testInvalidInput(invalidInput: String?) {
         Assertions.assertThrows(RuntimeException::class.java) {
-            pinGuesser.getPINs(
+            getPINs(
                 invalidInput!!
             )
         }
     }
 
     fun testCombineSolutions() {
-        val actual = pinGuesser.combineSolutions(setOf("12", "34"), setOf("8", "0"))
+        val actual = combineSolutions(setOf("12", "34"), setOf("8", "0"))
         val expected = setOf("128", "120", "348", "340")
         Assertions.assertEquals(actual, expected)
     }
