@@ -7,7 +7,7 @@ import java.lang.RuntimeException
 import java.util.stream.Stream
 
 internal class PinGuesserTest {
-    var pinGuesser = PinGuesser()
+    val pinGuesser = PinGuesser()
     @ParameterizedTest
     @MethodSource("testSingleDigitParameters")
     fun testSingleDigit(observedPin: String?, expected: Set<String?>?) {
