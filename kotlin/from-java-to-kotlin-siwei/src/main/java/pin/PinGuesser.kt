@@ -22,7 +22,7 @@ fun getPINs(observedPin: String): Set<String> {
     require(observedPin.all { it in mapPins }) { "PIN $observedPin is invalid" }
 
     return observedPin.fold(initial = setOf("")) { acc: Set<String>, c: Char ->
-        val pinsForChar: Set<String> = mapPins[c]?: throw RuntimeException("PIN $observedPin is invalid")
+        val pinsForChar: Set<String> = mapPins[c] ?: throw RuntimeException("PIN $observedPin is invalid")
         combineSolutions(acc, pinsForChar)
     }
 }
