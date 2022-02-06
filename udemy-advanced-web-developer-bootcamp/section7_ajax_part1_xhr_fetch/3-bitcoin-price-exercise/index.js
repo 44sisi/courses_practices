@@ -1,6 +1,9 @@
+var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+
 const button = document.querySelector('#btn');
 const price = document.querySelector('#price');
 const time = document.querySelector('#time');
+const currency = 'EUR';
 
 // listen for clicks
 button.addEventListener('click', function () {
@@ -10,8 +13,8 @@ button.addEventListener('click', function () {
     if (XHR.readyState === 4 && XHR.status === 200) {
       const response = JSON.parse(XHR.responseText);
 
-      price.innerHTML = `${response.bpi.USD.rate_float} ${response.bpi.USD.code}`;
-      time.innerHTML = response.time.updated;
+      price.innerText = `${response.bpi[currency].rate_float} ${response.bpi[currency].code}`;
+      time.innerText = response.time.updated;
     }
   };
 
