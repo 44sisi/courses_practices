@@ -5,7 +5,7 @@ function RecipeApp() {
   return (
     <div className='App'>
       <Recipe 
-        title='pasta' 
+        title='Pasta' 
         ingredients={['flour', 'water']}
         instructions = "mix ingredients"
         img="spaghetti.jpeg"
