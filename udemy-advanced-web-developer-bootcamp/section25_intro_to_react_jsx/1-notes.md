@@ -8,7 +8,7 @@
         )
     }
 ```
-3. react component can only return a single parent element
+3. react component can only return a single parent element, can use React fragment `<></>`
 4. all JSX tags must be closed
 ```
     <img />
