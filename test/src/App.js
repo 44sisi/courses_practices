@@ -34,12 +34,12 @@ function App() {
   const [updatedTime, setUpdatedTime] = useState('---');
   const [requestedTime, setRequestedTime] = useState('---');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
     let cancelled = false;
 
-    fetchData(signal, cancelled);
+    fetchData(signal, z);
     const interval = setInterval(() => {
       fetchData(signal, cancelled);
     }, 5000);
@@ -57,7 +57,7 @@ function App() {
       .then((data) => {
         const result = Object.values(data.bpi);
         const updatedTime = data.time.updated;
-        
+
         if (!cancelled) {
           setCodesToShow(result.map((r) => r.code));
           setCurrencies(result);
