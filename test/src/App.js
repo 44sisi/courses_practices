@@ -31,6 +31,8 @@ function App() {
   const [codesToShow, setCodesToShow] = useState([]);
   const [sortRateAsc, setSortRateAsc] = useState(true);
   const [numberToShow, setNumberToShow] = useState(5);
+  const [updatedTime, setUpdatedTime] = useState('---');
+  const [requestedTime, setRequestedTime] = useState('---');
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -41,14 +43,32 @@ function App() {
       .then((res) => res.json())
       .then((data) => {
         const result = Object.values(data.bpi);
-
+        const updatedTime = data.time.updated;
         if (!cancelled) {
           setCodesToShow(result.map((r) => r.code));
           setCurrencies(result);
+          setUpdatedTime(updatedTime);
+          setRequestedTime(new Date().toISOString());
         }
       });
 
+    const interval = setInterval(() => {
+      fetch('https://api.coindesk.com/v1/bpi/currentprice.json', { signal })
+        .then((res) => res.json())
+        .then((data) => {
+          const result = Object.values(data.bpi);
+          const updatedTime = data.time.updated;
+          if (!cancelled) {
+            setCodesToShow(result.map((r) => r.code));
+            setCurrencies(result);
+            setUpdatedTime(updatedTime);
+            setRequestedTime(new Date().toISOString());
+          }
+        });
+    }, 5000);
+
     return function cleanup() {
+      clearInterval(interval);
       controller.abort();
       cancelled = true;
     };
@@ -155,6 +175,11 @@ function App() {
               ))}
           </tbody>
         </table>
+      </div>
+
+      <div>
+        <div>Updated time: {updatedTime}</div>
+        <div>Requested time: {requestedTime}</div>
       </div>
 
       {/* <ol>
