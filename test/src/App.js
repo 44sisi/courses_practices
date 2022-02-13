@@ -39,32 +39,9 @@ function App() {
     const { signal } = controller;
     let cancelled = false;
 
-    fetch('https://api.coindesk.com/v1/bpi/currentprice.json', { signal })
-      .then((res) => res.json())
-      .then((data) => {
-        const result = Object.values(data.bpi);
-        const updatedTime = data.time.updated;
-        if (!cancelled) {
-          setCodesToShow(result.map((r) => r.code));
-          setCurrencies(result);
-          setUpdatedTime(updatedTime);
-          setRequestedTime(new Date().toISOString());
-        }
-      });
-
+    fetchData(signal, cancelled);
     const interval = setInterval(() => {
-      fetch('https://api.coindesk.com/v1/bpi/currentprice.json', { signal })
-        .then((res) => res.json())
-        .then((data) => {
-          const result = Object.values(data.bpi);
-          const updatedTime = data.time.updated;
-          if (!cancelled) {
-            setCodesToShow(result.map((r) => r.code));
-            setCurrencies(result);
-            setUpdatedTime(updatedTime);
-            setRequestedTime(new Date().toISOString());
-          }
-        });
+      fetchData(signal, cancelled);
     }, 5000);
 
     return function cleanup() {
@@ -73,6 +50,22 @@ function App() {
       cancelled = true;
     };
   }, []);
+
+  function fetchData(signal, cancelled) {
+    fetch('https://api.coindesk.com/v1/bpi/currentprice.json', { signal })
+      .then((res) => res.json())
+      .then((data) => {
+        const result = Object.values(data.bpi);
+        const updatedTime = data.time.updated;
+        
+        if (!cancelled) {
+          setCodesToShow(result.map((r) => r.code));
+          setCurrencies(result);
+          setUpdatedTime(updatedTime);
+          setRequestedTime(new Date().toISOString());
+        }
+      });
+  }
 
   function handleHideCodeChange(e) {
     console.log(e.target.value);
@@ -92,6 +85,16 @@ function App() {
     setNumberToShow(e.target.value);
   }
 
+  function getCurrenciesToDisplay() {
+    return currencies
+      .filter((c) => c.code !== codeToHide)
+      .filter((c) => codesToShow.includes(c.code))
+      .sort((a, b) =>
+        sortRateAsc ? a.rate_float - b.rate_float : b.rate_float - a.rate_float
+      )
+      .slice(0, numberToShow);
+  }
+
   return (
     <div className='App'>
       <div>
@@ -100,19 +103,15 @@ function App() {
       </div>
 
       <div style={tableStyle}>
-        <label for='hide-code'>To hide: </label>
-        <select
-          id='hide-code'
-          onChange={handleHideCodeChange}
-          style={inputStyle}
-        >
-          <option></option>
-          {Array.from(new Set(currencies.map((c) => c.code))).map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
+        <SelectComponent
+          description='To hide'
+          labelFor='hide-code'
+          selectId='hide-code'
+          handleChange={handleHideCodeChange}
+          options={Array.from(new Set(currencies.map((c) => c.code)))}
+        />
 
-        <label for='show-codes'>To show: </label>
+        <label htmlFor='show-codes'>To show: </label>
         <select
           id='show-codes'
           multiple
@@ -127,7 +126,7 @@ function App() {
           ))}
         </select>
 
-        <label for='sort-rate'>Sort rate by: </label>
+        <label htmlFor='sort-rate'>Sort rate by: </label>
         <button
           id='sort-rate'
           onClick={() => setSortRateAsc(!sortRateAsc)}
@@ -136,7 +135,7 @@ function App() {
           {sortRateAsc ? '↑' : '↓'}
         </button>
 
-        <label for='choose-number-to-show'>Number to show: </label>
+        <label htmlFor='choose-number-to-show'>Number to show: </label>
         <input
           id='choose-number-to-show'
           type='range'
@@ -148,33 +147,7 @@ function App() {
         ></input>
         <output>{numberToShow}</output>
 
-        <table style={tableStyle}>
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Rate</th>
-              <th>Desc</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currencies
-              .filter((c) => c.code !== codeToHide)
-              .filter((c) => codesToShow.includes(c.code))
-              .sort((a, b) =>
-                sortRateAsc
-                  ? a.rate_float - b.rate_float
-                  : b.rate_float - a.rate_float
-              )
-              .slice(0, numberToShow)
-              .map((c) => (
-                <tr key={c.code}>
-                  <td>{c.code}</td>
-                  <td>{c.rate_float}</td>
-                  <td>{c.description}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+        <CurrencyTable currencies={getCurrenciesToDisplay()} />
       </div>
 
       <div>
@@ -192,6 +165,47 @@ function App() {
         })}
       </ol> */}
     </div>
+  );
+}
+
+function SelectComponent(props) {
+  return (
+    <>
+      <label htmlFor={props.labelFor}>{props.description}: </label>
+      <select
+        id={props.selectId}
+        onChange={props.handleChange}
+        style={inputStyle}
+      >
+        <option></option>
+        {props.options.map((o) => (
+          <option key={o}>{o}</option>
+        ))}
+      </select>
+    </>
+  );
+}
+
+function CurrencyTable(props) {
+  return (
+    <table style={tableStyle}>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Rate</th>
+          <th>Desc</th>
+        </tr>
+      </thead>
+      <tbody>
+        {props.currencies.map((c) => (
+          <tr key={c.code}>
+            <td>{c.code}</td>
+            <td>{c.rate_float}</td>
+            <td>{c.description}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
