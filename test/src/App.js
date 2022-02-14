@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useEffect, useState } from 'react';
+import SelectComponent from './SelectComponent';
 
 function ToRemoveWithCleanup() {
   useEffect(() => {
@@ -31,15 +31,15 @@ function App() {
   const [codesToShow, setCodesToShow] = useState([]);
   const [sortRateAsc, setSortRateAsc] = useState(true);
   const [numberToShow, setNumberToShow] = useState(5);
-  const [updatedTime, setUpdatedTime] = useState('---');
-  const [requestedTime, setRequestedTime] = useState('---');
+  const [updatedTime, setUpdatedTime] = useState('');
+  const [requestedTime, setRequestedTime] = useState('');
 
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
     let cancelled = false;
 
-    fetchData(signal, z);
+    fetchData(signal, cancelled);
     const interval = setInterval(() => {
       fetchData(signal, cancelled);
     }, 5000);
@@ -103,49 +103,58 @@ function App() {
       </div>
 
       <div style={tableStyle}>
-        <SelectComponent
-          description='To hide'
-          labelFor='hide-code'
-          selectId='hide-code'
-          handleChange={handleHideCodeChange}
-          options={Array.from(new Set(currencies.map((c) => c.code)))}
-        />
+        <div className='App-input-bar'>
+          <SelectComponent
+            description='To hide'
+            labelFor='hide-code'
+            selectId='hide-code'
+            handleChange={handleHideCodeChange}
+            options={Array.from(new Set(currencies.map((c) => c.code)))}
+            inputStyle={inputStyle}
+          />
 
-        <label htmlFor='show-codes'>To show: </label>
-        <select
-          id='show-codes'
-          multiple
-          size='2'
-          onChange={handleShowCodesChange}
-          style={inputStyle}
-        >
-          {Array.from(new Set(currencies.map((c) => c.code))).map((c) => (
-            <option selected key={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+          <div>
+            <label htmlFor='show-codes'>To show: </label>
+            <select
+              id='show-codes'
+              multiple
+              size='2'
+              onChange={handleShowCodesChange}
+              style={inputStyle}
+            >
+              {Array.from(new Set(currencies.map((c) => c.code))).map((c) => (
+                <option selected key={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <label htmlFor='sort-rate'>Sort rate by: </label>
-        <button
-          id='sort-rate'
-          onClick={() => setSortRateAsc(!sortRateAsc)}
-          style={inputStyle}
-        >
-          {sortRateAsc ? '↑' : '↓'}
-        </button>
+          <div>
+            <label htmlFor='sort-rate'>Sort rate by: </label>
+            <button
+              id='sort-rate'
+              onClick={() => setSortRateAsc(!sortRateAsc)}
+              style={inputStyle}
+            >
+              {sortRateAsc ? '↑' : '↓'}
+            </button>
+          </div>
 
-        <label htmlFor='choose-number-to-show'>Number to show: </label>
-        <input
-          id='choose-number-to-show'
-          type='range'
-          value={numberToShow}
-          min='1'
-          max='10'
-          onChange={handleShowNumberChange}
-          style={inputStyle}
-        ></input>
-        <output>{numberToShow}</output>
+          <div>
+            <label htmlFor='choose-number-to-show'>Number to show: </label>
+            <input
+              id='choose-number-to-show'
+              type='range'
+              value={numberToShow}
+              min='1'
+              max='10'
+              onChange={handleShowNumberChange}
+              style={inputStyle}
+            ></input>
+            <output>{numberToShow}</output>
+          </div>
+        </div>
 
         <CurrencyTable currencies={getCurrenciesToDisplay()} />
       </div>
@@ -168,23 +177,23 @@ function App() {
   );
 }
 
-function SelectComponent(props) {
-  return (
-    <>
-      <label htmlFor={props.labelFor}>{props.description}: </label>
-      <select
-        id={props.selectId}
-        onChange={props.handleChange}
-        style={inputStyle}
-      >
-        <option></option>
-        {props.options.map((o) => (
-          <option key={o}>{o}</option>
-        ))}
-      </select>
-    </>
-  );
-}
+// function SelectComponent(props) {
+//   return (
+//     <div>
+//       <label htmlFor={props.labelFor}>{props.description}: </label>
+//       <select
+//         id={props.selectId}
+//         onChange={props.handleChange}
+//         style={inputStyle}
+//       >
+//         <option></option>
+//         {props.options.map((o) => (
+//           <option key={o}>{o}</option>
+//         ))}
+//       </select>
+//     </div>
+//   );
+// }
 
 function CurrencyTable(props) {
   return (
