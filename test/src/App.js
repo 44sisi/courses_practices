@@ -39,7 +39,7 @@ function App() {
     const { signal } = controller;
     let cancelled = false;
 
-    fetchData(signal, cancelled);
+    fetchData(signal, cancelled, true);
     const interval = setInterval(() => {
       fetchData(signal, cancelled);
     }, 5000);
@@ -51,7 +51,7 @@ function App() {
     };
   }, []);
 
-  function fetchData(signal, cancelled) {
+  function fetchData(signal, cancelled, firstTime) {
     fetch('https://api.coindesk.com/v1/bpi/currentprice.json', { signal })
       .then((res) => res.json())
       .then((data) => {
@@ -59,10 +59,13 @@ function App() {
         const updatedTime = data.time.updated;
 
         if (!cancelled) {
-          setCodesToShow(result.map((r) => r.code));
           setCurrencies(result);
           setUpdatedTime(updatedTime);
           setRequestedTime(new Date().toISOString());
+
+          if (firstTime) {
+            setCodesToShow(result.map((r) => r.code));
+          }
         }
       });
   }
@@ -134,7 +137,7 @@ function App() {
             <label htmlFor='sort-rate'>Sort rate by: </label>
             <button
               id='sort-rate'
-              onClick={() => setSortRateAsc(prevState => !prevState)}
+              onClick={() => setSortRateAsc((prevState) => !prevState)}
               style={inputStyle}
             >
               {sortRateAsc ? '↑' : '↓'}
