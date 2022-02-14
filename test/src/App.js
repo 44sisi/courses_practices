@@ -134,7 +134,7 @@ function App() {
             <label htmlFor='sort-rate'>Sort rate by: </label>
             <button
               id='sort-rate'
-              onClick={() => setSortRateAsc(!sortRateAsc)}
+              onClick={() => setSortRateAsc(prevState => !prevState)}
               style={inputStyle}
             >
               {sortRateAsc ? '↑' : '↓'}
@@ -176,24 +176,6 @@ function App() {
     </div>
   );
 }
-
-// function SelectComponent(props) {
-//   return (
-//     <div>
-//       <label htmlFor={props.labelFor}>{props.description}: </label>
-//       <select
-//         id={props.selectId}
-//         onChange={props.handleChange}
-//         style={inputStyle}
-//       >
-//         <option></option>
-//         {props.options.map((o) => (
-//           <option key={o}>{o}</option>
-//         ))}
-//       </select>
-//     </div>
-//   );
-// }
 
 function CurrencyTable(props) {
   return (
