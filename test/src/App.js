@@ -67,6 +67,9 @@ function App() {
             setCodesToShow(result.map((r) => r.code));
           }
         }
+      })
+      .catch((e) => {
+        console.error(e);
       });
   }
 
@@ -120,15 +123,14 @@ function App() {
             <label htmlFor='show-codes'>To show: </label>
             <select
               id='show-codes'
-              multiple
+              multiple={true}
               size='2'
               onChange={handleShowCodesChange}
               style={inputStyle}
+              value={codesToShow}
             >
               {Array.from(new Set(currencies.map((c) => c.code))).map((c) => (
-                <option selected key={c}>
-                  {c}
-                </option>
+                <option key={c}>{c}</option>
               ))}
             </select>
           </div>
